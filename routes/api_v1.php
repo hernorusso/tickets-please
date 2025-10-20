@@ -7,4 +7,4 @@ use Illuminate\Support\Facades\Route;
 use function Pest\Laravel\json;
 
 
-Route::get('tickets', [TicketController::class, 'index']);
+Route::get('tickets', [TicketController::class, 'index'])->middleware('auth:sanctum');
