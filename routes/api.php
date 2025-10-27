@@ -9,7 +9,4 @@ use function Pest\Laravel\json;
 
 Route::post('/login', [AuthController::class, 'login']);
 Route::post('/register', [AuthController::class, 'register']);
-
-Route::get('/user', function (Request $request) {
-    return $request->user();
-})->middleware('auth:sanctum');
+Route::middleware('auth:sanctum')->post('/logout', [AuthController::class, 'logout']);
