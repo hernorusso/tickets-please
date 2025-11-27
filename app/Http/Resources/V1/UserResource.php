@@ -1,5 +1,4 @@
 <?php
-
 namespace App\Http\Resources\V1;
 
 use Illuminate\Http\Request;
@@ -28,6 +27,10 @@ class UserResource extends JsonResource
                         'updatedAt' => $this->update_at,
                     ]
                 )
+            ],
+            'includes' => TicketResource::collection($this->whenLoaded('tickets')),
+            'links' => [
+                'self' => route('users.show', ['user' => $this->id])
             ]
         ];
     }
