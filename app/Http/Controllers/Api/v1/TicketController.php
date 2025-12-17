@@ -6,18 +6,17 @@ use App\Http\Requests\Api\v1\StoreTicketRequest;
 use App\Http\Requests\Api\v1\UpdateTicketRequest;
 use App\Http\Resources\V1\TicketResource;
 use App\Models\Ticket;
+use App\Http\Filters\V1\TicketFilter;
+use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TicketController extends ApiController
 {
     /**
      * Display a listing of the resource.
      */
-    public function index()
+    public function index(TicketFilter $filters): AnonymousResourceCollection
     {
-        if ($this->include('author')) {
-            return TicketResource::collection(Ticket::with('user')->paginate());
-        }
-        return TicketResource::collection(Ticket::paginate());
+        return TicketResource::collection(Ticket::filter($filters)->paginate());
     }
 
     /**
@@ -34,7 +33,7 @@ class TicketController extends ApiController
     public function show(Ticket $ticket)
     {
         if ($this->include('author')) {
-            return new TicketResource($ticket->load('user'));
+            return new TicketResource($ticket->load('author'));
         }
         return new TicketResource($ticket);
     }
