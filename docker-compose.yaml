@@ -1,0 +1,42 @@
+services:
+# ToDo: move the environment to the env
+  app:
+      build:
+        context: .
+        dockerfile: Dockerfile
+      container_name: laravel-app
+      volumes:
+        - .:/var/www
+      depends_on:
+        - db
+      env_file:
+        - .env
+  
+  nginx:
+    image: nginx:alpine
+    container_name: nginx-server
+    ports:
+      - "8082:80"
+    volumes:
+      - .:/var/www
+      - ./docker-compose/nginx:/etc/nginx/conf.d/
+    depends_on:
+      - app
+
+  db:
+    image: mysql:9.3.0
+    container_name: mysql-local
+    command: --lower_case_table_names=2
+    restart: always
+    ports:
+      - "3307:3306"
+    environment:
+      MYSQL_ALLOW_EMPTY_PASSWORD: yes
+      MYSQL_DATABASE: tickets_please
+      MYSQL_ROOT_HOST: '%'
+    volumes:
+      - mysql_data_volume:/var/lib/mysql
+
+# Only needed if using Option B (Named Volume)
+volumes:
+  mysql_data_volume:
