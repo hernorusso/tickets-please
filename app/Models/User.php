@@ -2,12 +2,14 @@
 
 namespace App\Models;
 
-
+use App\Http\Filters\V1\QueryFilter;
+use Illuminate\Database\Eloquent\Builder;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Relations\HasMany;
 use Laravel\Sanctum\HasApiTokens;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
+use \Illuminate\Database\Eloquent\Attributes\Scope;
 
 class User extends Authenticatable
 {
@@ -51,5 +53,11 @@ class User extends Authenticatable
     public function tickets(): HasMany
     {
         return $this->hasMany(Ticket::class);
+    }
+
+    #[Scope]
+    protected function filter(Builder $builder, QueryFilter $filters): Builder
+    {
+        return $filters->apply($builder);
     }
 }

@@ -22,6 +22,7 @@ abstract class QueryFilter
             }
         }
     }
+
     public function apply(Builder $builder): Builder
     {
         $this->builder = $builder;

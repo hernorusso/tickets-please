@@ -16,7 +16,7 @@ services:
     image: nginx:alpine
     container_name: nginx-server
     ports:
-      - "8082:80"
+      - "8083:80"
     volumes:
       - .:/var/www
       - ./docker-compose/nginx:/etc/nginx/conf.d/
