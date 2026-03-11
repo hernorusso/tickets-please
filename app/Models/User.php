@@ -11,6 +11,9 @@ use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 use \Illuminate\Database\Eloquent\Attributes\Scope;
 
+/**
+ * @method static Builder|User filter(QueryFilter $filters)
+ */
 class User extends Authenticatable
 {
     /** @use HasFactory<\Database\Factories\UserFactory> */
