@@ -5,6 +5,13 @@ use App\Http\Filters\V1\QueryFilter;
 
 class TicketFilter extends QueryFilter
 {
+    protected array $allowedSorts = [
+        'title',
+        'status',
+        'createdAt' => 'created_at',
+        'updatedAt' => 'updated_at'
+    ];
+    
     public function createdAt($value): void
     {
         $dates = explode(',', $value);
