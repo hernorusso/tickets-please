@@ -9,6 +9,7 @@ trait ApiResponses
     {
         return $this->success($message, $data, 200);
     }
+    
     public function success($message, $data, $statusCode)
     {
         return response()->json([
