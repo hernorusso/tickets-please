@@ -2,22 +2,22 @@
 
 namespace App\Http\Controllers\Api\V1;
 
-use App\Http\Controllers\Controller;
 use App\Http\Filters\V1\TicketFilter;
 use App\Http\Resources\V1\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Http\Requests\Api\v1\StoreTicketRequest;
+use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
-class AuthorTicketController extends Controller
+class AuthorTicketController extends ApiController
 {
     public function index(User $author, TicketFilter $filters): AnonymousResourceCollection
     {
         return TicketResource::collection($author->tickets()->filter($filters)->paginate());
     }
 
-     /**
+    /**
      * Store a newly created resource in storage.
      */
     public function store(User $author, StoreTicketRequest $request)
@@ -30,5 +30,24 @@ class AuthorTicketController extends Controller
         ];
 
         return new TicketResource(Ticket::create($model));
+    }
+
+    /**
+     * Remove the specified resource from storage.
+     */
+    public function destroy($author_id, $ticket_id)
+    {
+        try {
+            $ticket = Ticket::findOrFail($ticket_id);
+
+            if ($ticket->user_id == $author_id->id) {
+                $ticket->delete();
+                return $this->ok('Ticket deleted successfully');
+            }
+
+            return $this->error('Ticket cannot be found', 404);
+        } catch (ModelNotFoundException $exception) {
+            return $this->error('Ticket cannot be found', 404);
+        }
     }
 }
