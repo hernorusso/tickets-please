@@ -17,14 +17,21 @@ class BaseTicketRequest extends FormRequest
             'data.relationships.author.data.id' => 'user_id',
         ];
 
-        $mappedAttributes = [];
+        $attributesToUpdate = [];
 
         foreach ($attributeMap as $key => $value) {
-            if ($this->validated($key)) {
-                $mappedAttributes[$value] = $this->validated($key);
+            if ($this->has($key) && $this->validated($key) !== null) {
+                $attributesToUpdate[$value] = $this->validated($key);
             }
         }
 
-        return $mappedAttributes;
+        return $attributesToUpdate;
+    }
+
+    public function messages()
+    {
+        return [
+            'data.attributes.status' => 'The status must be one of: A, C, H, X',
+        ];
     }
 }

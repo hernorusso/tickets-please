@@ -8,6 +8,7 @@ use App\Http\Resources\V1\TicketResource;
 use App\Models\Ticket;
 use App\Models\User;
 use App\Http\Requests\Api\v1\StoreTicketRequest;
+use App\Http\Requests\Api\v1\UpdateTicketRequest;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
@@ -23,12 +24,8 @@ class AuthorTicketController extends ApiController
      */
     public function store(User $author, StoreTicketRequest $request)
     {
-        $model = [
-            'title' => $request->input('data.attributes.title'),
-            'description' => $request->input('data.attributes.description'),
-            'status' => $request->input('data.attributes.status', 'open'),
-            'user_id' => $author->id,
-        ];
+        $model = $request->mappedAttributes();
+        $model['user_id'] = $author->id;
 
         return new TicketResource(Ticket::create($model));
     }
@@ -41,17 +38,33 @@ class AuthorTicketController extends ApiController
         try {
             $ticket = Ticket::findOrFail($ticket_id);
 
-             if ($ticket->user_id == $author_id) {
-                 $model = [
-                     'title' => $request->input('data.attributes.title'),
-                     'description' => $request->input('data.attributes.description'),
-                     'status' => $request->input('data.attributes.status', 'open'),
-                     'user_id' => $author_id,
-                 ];
-     
-                 $ticket->update($model);
-     
-                 return new TicketResource($ticket);
+            if ($ticket->user_id == $author_id) {
+
+                $ticket->update($request->mappedAttributes());
+
+                return new TicketResource($ticket);
+            }
+
+            // ToDo: do someeething if the users do not match. 
+
+        } catch (ModelNotFoundException $e) {
+            // Handle the exception
+            return $this->error('Ticket cannot be found', 404);
+        }
+    }
+
+    /**
+     * Replace the specified resource in storage.
+     */
+    public function update(UpdateTicketRequest $request, $author_id, $ticket_id)
+    {
+        try {
+            $ticket = Ticket::findOrFail($ticket_id);
+
+            if ($ticket->user_id == $author_id) {
+                $ticket->update($request->mappedAttributes());
+
+                return new TicketResource($ticket);
             }
 
             // ToDo: do someeething if the users do not match. 

@@ -33,11 +33,4 @@ class StoreTicketRequest extends BaseTicketRequest
         
         return $rules;
     }
-
-    public function messages()
-    {
-        return [
-            'data.attributes.status' => 'The status must be one of: A, C, H, X',
-        ];
-    }
 }
