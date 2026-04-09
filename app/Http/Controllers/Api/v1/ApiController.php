@@ -6,12 +6,12 @@ use App\Http\Controllers\Controller;
 use App\Traits\ApiResponses;
 use Illuminate\Support\Facades\Gate;
 
-class ApiController extends Controller
+abstract class ApiController extends Controller
 {
     use ApiResponses;
 
-    protected $policyGate;
-    
+    protected abstract function getPolicyGate() :string;
+
     public function include(string $relationship): bool
     {
         $param = request()->get('include');
@@ -26,7 +26,7 @@ class ApiController extends Controller
 
     public function isAble($ability, $targetModel)
     {
-        $gate = "{$this->policyGate}.{$ability}";
+        $gate = "{$this->getPolicyGate()}.{$ability}";
 
         Gate::authorize($gate, $targetModel);
     }

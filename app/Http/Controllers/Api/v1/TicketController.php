@@ -16,7 +16,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 class TicketController extends ApiController
 {
 
-    protected $policyGate = 'v1.ticket';
+    protected function getPolicyGate(): string
+    {
+        return 'v1.ticket';
+    }
+
     /**
      * Display a listing of the resource.
      */
