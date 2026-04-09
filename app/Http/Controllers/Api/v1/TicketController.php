@@ -9,11 +9,14 @@ use App\Models\Ticket;
 use App\Http\Filters\V1\TicketFilter;
 use App\Http\Requests\Api\v1\ReplaceTicketRequest;
 use App\Models\User;
+use Illuminate\Auth\Access\AuthorizationException;
 use Illuminate\Database\Eloquent\ModelNotFoundException;
 use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class TicketController extends ApiController
 {
+
+    protected $policyGate = 'v1.ticket';
     /**
      * Display a listing of the resource.
      */
@@ -64,12 +67,16 @@ class TicketController extends ApiController
     {
         try {
             $ticket = Ticket::findOrFail($ticket_id);
+            $this->isAble('update', $ticket);
+
             $ticket->update($request->mappedAttributes());
 
             return new TicketResource($ticket);
         } catch (ModelNotFoundException $e) {
             // Handle the exception
             return $this->error('Ticket cannot be found', 404);
+        } catch (AuthorizationException $e) {
+            return $this->error('You are not authorized to update this TKT', 401);
         }
     }
 

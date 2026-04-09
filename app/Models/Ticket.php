@@ -12,6 +12,7 @@ use Illuminate\Database\Eloquent\Builder;
 /**
  * @method static Builder|Ticket filter(QueryFilter $filters)
  */
+
 class Ticket extends Model
 {
     /** @use HasFactory<\Database\Factories\TicketFactory> */
