@@ -8,6 +8,36 @@ use App\Permisions\V1\Abilities;
 
 class TicketPolicy
 {
+
+    public function destroy(User $user, Ticket $ticket): bool
+    {
+        if ($user->tokenCan(Abilities::DeleteTicket)) {
+            return true;
+        } else if ($user->tokenCan(Abilities::DeleteOwnTicket)) {
+            return $user->id === $ticket->user_id;
+        }
+
+        return false;
+    }
+
+    public function replace(User $user, Ticket $ticket): bool
+    {
+        if ($user->tokenCan(Abilities::ReplaceTicket)) {
+            return true;
+        }
+
+        return false;
+    }
+
+    public function store(User $user, Ticket $ticket): bool
+    {
+        if ($user->tokenCan(Abilities::CreateTicket)) {
+            return true;
+        }
+
+        return false;
+    }
+    
     /**
      * Determine whether the user can update the model.
      */

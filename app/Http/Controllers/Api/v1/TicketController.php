@@ -36,11 +36,16 @@ class TicketController extends ApiController
     {
         try {
             User::findOrFail($request->input('data.relationships.author.data.id'));
+            // policy
+            $this->isAble('store', null);
+
         } catch (ModelNotFoundException $e) {
             // Handle the exception
             return $this->ok('User not found', [
                 'error' => 'The provided user ID does not exist.',
             ]);
+        } catch (AuthorizationException $e) {
+            return $this->error('You are not authorized to create a TKT', 401);
         }
 
         return new TicketResource(Ticket::create($request->mappedAttributes()));
@@ -91,13 +96,15 @@ class TicketController extends ApiController
     {
         try {
             $ticket = Ticket::findOrFail($ticket_id);
-
+            $this->isAble('replace', $ticket);
             $ticket->update($request->mappedAttributes());
 
             return new TicketResource($ticket);
         } catch (ModelNotFoundException $e) {
             // Handle the exception
             return $this->error('Ticket cannot be found', 404);
+        } catch (AuthorizationException $e) {
+            return $this->error('You are not authorized to replace this TKT', 401);
         }
     }
 
@@ -108,11 +115,14 @@ class TicketController extends ApiController
     {
         try {
             $ticket = Ticket::findOrFail($ticket_id);
+            $this->isAble('destroy', $ticket);
             $ticket->delete();
 
             return $this->ok('Ticket deleted successfully');
         } catch (ModelNotFoundException $exception) {
             return $this->error('Ticket cannot be found', 404);
+        } catch (AuthorizationException $e) {
+            return $this->error('You are not authorized to delete this TKT', 401);
         }
     }
 }

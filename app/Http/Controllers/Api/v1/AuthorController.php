@@ -10,6 +10,10 @@ use App\Models\User;
 
 class AuthorController extends ApiController
 {
+    protected function getPolicyGate(): string
+    {
+        return 'v1.ticket';
+    }
     /**
      * Display a listing of the resource.
      */
@@ -31,7 +35,7 @@ class AuthorController extends ApiController
      */
     public function show(User $author)
     {
-        if($this->include('tickets')) {
+        if ($this->include('tickets')) {
             return new AuthorResource($author->load('tickets'));
         }
         return new AuthorResource($author);

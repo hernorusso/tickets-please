@@ -22,5 +22,8 @@ class AppServiceProvider extends ServiceProvider
     public function boot(): void
     {
         Gate::define('v1.ticket.update', [TicketPolicy::class, 'update']);
+        Gate::define('v1.ticket.destroy', [TicketPolicy::class, 'destroy']);
+        Gate::define('v1.ticket.create', [TicketPolicy::class, 'create']);
+        Gate::define('v1.ticket.replace', [TicketPolicy::class, 'replace']);
     }
 }

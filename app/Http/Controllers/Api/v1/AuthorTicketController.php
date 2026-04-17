@@ -14,6 +14,11 @@ use Illuminate\Http\Resources\Json\AnonymousResourceCollection;
 
 class AuthorTicketController extends ApiController
 {
+    protected function getPolicyGate(): string
+    {
+        return 'v1.ticket';
+    }
+
     public function index(User $author, TicketFilter $filters): AnonymousResourceCollection
     {
         return TicketResource::collection($author->tickets()->filter($filters)->paginate());
@@ -83,7 +88,7 @@ class AuthorTicketController extends ApiController
         try {
             $ticket = Ticket::findOrFail($ticket_id);
 
-            if ($ticket->user_id == $author_id->id) {
+            if ($ticket->user_id == $author_id) {
                 $ticket->delete();
                 return $this->ok('Ticket deleted successfully');
             }
