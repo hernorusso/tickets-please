@@ -12,7 +12,7 @@ Route::middleware('auth:sanctum')->group(function() {
 
   Route::apiResource('authors', AuthorController::class);
   Route::apiResource('authors.tickets', AuthorTicketController::class)->except('update');
-  Route::patch('authors/{author}/tickets/{ticket}', [AuthorTicketController::class, 'update']);
-  Route::put('authors/{author}/tickets/{ticket}', [AuthorTicketController::class, 'replace']);
-  Route::delete('authors/{author}/tickets/{ticket}', [AuthorTicketController::class, 'destroy']);
+  Route::patch('authors/{author}/tickets/{ticket}', [AuthorTicketController::class, 'update'])->name('authors.tickets.patch');
+  Route::put('authors/{author}/tickets/{ticket}', [AuthorTicketController::class, 'replace'])->name('authors.tickets.put');
+  // Route::delete('authors/{author}/tickets/{ticket}', [AuthorTicketController::class, 'destroy']);
 });
