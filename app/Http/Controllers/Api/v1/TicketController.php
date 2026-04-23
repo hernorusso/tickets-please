@@ -42,7 +42,6 @@ class TicketController extends ApiController
         } catch (AuthorizationException $e) {
             return $this->error('You are not authorized to create a TKT', 401);
         }
-
     }
 
     /**

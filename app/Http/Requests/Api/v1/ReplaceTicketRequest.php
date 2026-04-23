@@ -21,16 +21,26 @@ class ReplaceTicketRequest extends BaseTicketRequest
      */
     public function rules(): array
     {
+        $authorIdAttr = $this->routeIs('tickets.replace') ? 'data.relationships.author.data.id' : "author";
         $rules = [
             'data.attributes.title' => 'required|string',
             'data.attributes.description' => 'required|string',
             'data.attributes.status' => 'required|in:A,C,H,X',
+            $authorIdAttr => 'required|integer|exists:users,id'
         ];
 
-        if ($this->routeIs('tickets.replace')) {
-            $rules['data.relationships.author.data.id'] = 'required|integer';
+
+        if ($this->routeIs('authors.tickets.replace')) {
+            $rules[$authorIdAttr] .= '|size:' . $this->author;
         }
         
         return $rules;
+    }
+
+    protected function prepareForValidation()
+    {
+        if ($this->routeIs('authors.tickets.put')) {
+            return $this->merge(['author' => $this->author]);
+        }
     }
 }
